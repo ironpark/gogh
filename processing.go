@@ -7,7 +7,7 @@ import (
 	_ "image/png"
 )
 
-func (src *Mat) Grayscale() image.Image {
+func (src *Img) Grayscale() image.Image {
 	img := src.src
 	bounds := img.Bounds()
 	gray := image.NewGray(bounds)
@@ -19,7 +19,7 @@ func (src *Mat) Grayscale() image.Image {
 	}
 	return gray
 }
-func (src *Mat) Binarization(T int, reverse bool) *Mat {
+func (src *Img) Binarization(T int, reverse bool) *Img {
 	dst := src.Clone()
 	bounds := src.Bounds()
 	for x := 0; x < bounds.Max.X; x++ {
@@ -43,7 +43,7 @@ func (src *Mat) Binarization(T int, reverse bool) *Mat {
 	return dst
 }
 
-func (src *Mat) Histogram() []int {
+func (src *Img) Histogram() []int {
 	bounds := src.Bounds()
 	histogram := make([]int, 256)
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {

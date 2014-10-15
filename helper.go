@@ -18,7 +18,7 @@ func Save(path string, src image.Image) {
 	png.Encode(file, src)
 	defer file.Close()
 }
-func Load(path string) *Mat {
+func Load(path string) *Img {
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +29,7 @@ func Load(path string) *Mat {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return NewMat(ImageToRGBA(m))
+	return &Img{ImageToRGBA(m)}
 }
 
 func ImageToRGBA(img image.Image) *image.RGBA {
@@ -44,7 +44,7 @@ func ImageToRGBA(img image.Image) *image.RGBA {
 	return rgba
 }
 
-func clone(img *Mat) *Mat {
+func clone(img *Img) *Img {
 	bounds := img.Bounds()
 	rgba := image.NewRGBA(bounds)
 	for i := 0; i < bounds.Max.X; i++ {
@@ -52,5 +52,5 @@ func clone(img *Mat) *Mat {
 			rgba.Set(i, j, img.At(i, j).color)
 		}
 	}
-	return NewMat(rgba)
+	return &Img{rgba}
 }
