@@ -43,14 +43,15 @@ func (src *Mat) Binarization(T int, reverse bool) *Mat {
 	return dst
 }
 
-func (src *Mat) Histogram() []int {
+func (src *Mat) Reversal() *Mat {
+	dst := src.Clone()
 	bounds := src.Bounds()
-	histogram := make([]int, 256)
-	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			pixel := src.At(x, y).Gray() //.Gray()
-			histogram[pixel]++
+	for x := 0; x < bounds.Max.X; x++ {
+		for y := 0; y < bounds.Max.Y; y++ {
+			pixel := dst.At(x, y)
+			r, g, b, _ := pixel.RGBA()
+			pixel.Set(255-r, 255-g, 255-b)
 		}
 	}
-	return histogram
+	return dst
 }

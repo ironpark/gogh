@@ -7,10 +7,6 @@ import (
 	"image/color"
 )
 
-var (
-	GrayArray = make([]color.Color, 256)
-)
-
 func NewMat(src image.Image) *Mat {
 	dst := ImageToRGBA(src)
 	return &Mat{dst}
