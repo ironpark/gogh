@@ -7,14 +7,14 @@ import (
 	_ "image/png"
 )
 
-func (src *Img) Grayscale() image.Image {
-	img := src.src
+func (src *Img) Grayscale() *Img {
+	gray := src.Clone()
 	bounds := img.Bounds()
-	gray := image.NewGray(bounds)
-	model := gray.ColorModel()
 	for i := 0; i < bounds.Max.X; i++ {
 		for j := 0; j < bounds.Max.Y; j++ {
-			gray.Set(i, j, model.Convert(img.At(i, j)))
+			r, g, b := gray.At(x, y).RGBA()
+			color := (r + g + b) / 3
+			gray.At(x, y).Set(color, color, color)
 		}
 	}
 	return gray

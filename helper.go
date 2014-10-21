@@ -19,16 +19,6 @@ func save(path string, src image.Image) {
 	defer file.Close()
 }
 
-func Save(path string, src image.Image) {
-	file, err := os.Create(path)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	png.Encode(file, src)
-	defer file.Close()
-}
-
 func Load(path string) *Img {
 	file, err := os.Open(path)
 	if err != nil {
