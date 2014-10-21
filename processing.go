@@ -7,7 +7,7 @@ import (
 	_ "image/png"
 )
 
-func (src *Mat) Grayscale() image.Image {
+func (src *Img) Grayscale() image.Image {
 	img := src.src
 	bounds := img.Bounds()
 	gray := image.NewGray(bounds)
@@ -19,7 +19,7 @@ func (src *Mat) Grayscale() image.Image {
 	}
 	return gray
 }
-func (src *Mat) Binarization(T int, reverse bool) *Mat {
+func (src *Img) Binarization(T int, reverse bool) *Img {
 	dst := src.Clone()
 	bounds := src.Bounds()
 	for x := 0; x < bounds.Max.X; x++ {
@@ -38,19 +38,6 @@ func (src *Mat) Binarization(T int, reverse bool) *Mat {
 					pixel.Set(255, 255, 255)
 				}
 			}
-		}
-	}
-	return dst
-}
-
-func (src *Mat) Reversal() *Mat {
-	dst := src.Clone()
-	bounds := src.Bounds()
-	for x := 0; x < bounds.Max.X; x++ {
-		for y := 0; y < bounds.Max.Y; y++ {
-			pixel := dst.At(x, y)
-			r, g, b, _ := pixel.RGBA()
-			pixel.Set(255-r, 255-g, 255-b)
 		}
 	}
 	return dst
