@@ -13,7 +13,7 @@ go get -u github.com/ironpark/gogh
 ```
 ##How To Use?
 ### Simple Examples
-Histogram
+**Binarization/Histogram**
 ```go
 import (
 	"fmt"
@@ -24,11 +24,14 @@ import (
 func main() {
 	src := gogh.Load("some.jpg")
 	//method chaining pattern!
+	fmt.Println("histogram",src.Histogram().Array()) //Nomal histogram
+	fmt.Println("histogram",src.Histogram().Cumulative()) //Cumulative histogram
+	
+	//Binarization
 	src.Binarization(50, false).Save("Binarization.png")
-	fmt.Println("histogram",src.Histogram().Array())
 }
 ```
-Pixel Get/Set
+**Pixel Get/Set**
 ```go
 import (
 	"fmt"
@@ -45,7 +48,7 @@ func main() {
 		fmt.Println(src.At(1,2).RGBA())
 }
 ```
-Blur
+**Blur**
 ```go
 import (
 	"fmt"
@@ -55,5 +58,21 @@ import (
 func main() {
 	img := gogh.Load("some.jpg")
 	img.Blur(3, gogh.BLUR_BOX).Filter(sobel).Save("5.png")
+}
+```
+**Convolution Filter**
+```go
+var (
+	sobel = [][]float32{
+		{-1, 0, 1},
+		{-2, 0, 2},
+		{-1, 0, 1},
+	}
+)
+
+func main() {
+	fmt.Println("Hello World!")
+	img := gogh.Load("4.jpg")
+	img.Filter(sobel).Histogram().Cumulative()
 }
 ```
