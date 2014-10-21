@@ -31,7 +31,7 @@ func (src *Pixel) RGBA() (int, int, int, int) {
 }
 
 func (src *Img) Save(path string) {
-	Save(path, src.src)
+	save(path, src.src)
 }
 
 func (src *Img) Clone() *Img {
