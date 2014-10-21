@@ -1,7 +1,12 @@
 package gogh
 
+import (
+	//"image"
+	"fmt"
+)
+
 type histogram struct {
-	Nomal      []int
+	array      []int
 	cumulative []int
 	src        *Img
 	high       int
@@ -31,13 +36,37 @@ func (src *Img) Histogram() *histogram {
 	return &histogram{histo, nil, src, high, low}
 }
 
+//Histogram Array
+func (src *histogram) Array() []int {
+	return src.array
+}
+
+//Cumulative Histogram Array
 func (src *histogram) Cumulative() []int {
 	if src.cumulative != nil {
 		return src.cumulative
 	} else {
 		src.cumulative = make([]int, 256)
 		cumulate := 0
-		for i, volume := range src.Nomal {
+		for i, volume := range src.array {
+			cumulate += volume
+			src.cumulative[i] = cumulate
+		}
+		return src.cumulative
+	}
+}
+
+//Cumulative Histogram graph Img
+func (src *histogram) CumulativeGraph() {
+}
+
+func (src *histogram) Graph() []int {
+	if src.cumulative != nil {
+		return src.cumulative
+	} else {
+		src.cumulative = make([]int, 256)
+		cumulate := 0
+		for i, volume := range src.array {
 			cumulate += volume
 			src.cumulative[i] = cumulate
 		}
@@ -50,6 +79,7 @@ func (histo *histogram) Stretching() *Img {
 	//high - low
 	hml := (histo.high - histo.low)
 	bounds := histo.src.Bounds()
+	fmt.Println(histo.low, histo.high)
 	/*
 		new pixel = (oldpixel - low/high - low)*255
 	*/
@@ -57,7 +87,9 @@ func (histo *histogram) Stretching() *Img {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
 			pixel := histo.src.At(x, y)
 			gray := pixel.Gray()
-			gray = ((gray - histo.low) / hml) * 255
+			gray = int(float32(gray-histo.low) / float32(hml) * 255)
+			//gray = (gray - histo.low) / hml * 255
+
 			pixel.Set(gray, gray, gray)
 		}
 	}
