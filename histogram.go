@@ -3,12 +3,12 @@ package gogh
 type histogram struct {
 	Nomal      []int
 	cumulative []int
-	src        *Mat
+	src        *Img
 	high       int
 	low        int
 }
 
-func (src *Mat) Histogram() *histogram {
+func (src *Img) Histogram() *histogram {
 	bounds := src.Bounds()
 	histo := make([]int, 256)
 
@@ -46,7 +46,7 @@ func (src *histogram) Cumulative() []int {
 }
 
 //Contrast Stretching
-func (histo *histogram) Stretching() *Mat {
+func (histo *histogram) Stretching() *Img {
 	//high - low
 	hml := (histo.high - histo.low)
 	bounds := histo.src.Bounds()

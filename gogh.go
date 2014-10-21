@@ -2,24 +2,12 @@
 package gogh
 
 import (
-	//"fmt"
-	"github.com/suapapa/go_hangul"
 	"image"
 	"image/color"
 )
 
-<<<<<<< HEAD
-func NewMat(src image.Image) *Mat {
-	dst := ImageToRGBA(src)
-	return &Mat{dst}
-=======
-var (
-	GrayArray = make([]color.Color, 256)
-)
-
 func NewImg(rect image.Rectangle) *Img {
 	return &Img{image.NewRGBA(rect)}
->>>>>>> 445fcbcce5485b480a6c6f8fa72994eadb0a16f2
 }
 
 type Img struct {
