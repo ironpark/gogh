@@ -74,6 +74,7 @@ func (src *Img) Filter(kernel [][]float32) *Img {
 			v.At(x, y).Set(c, c, c)
 		}
 	}
+	src = v
 	return v
 }
 
