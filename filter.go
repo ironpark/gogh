@@ -1,6 +1,7 @@
 package gogh
 
 import (
+	"github.com/ironpark/gogh/filter"
 	"math"
 )
 
@@ -74,7 +75,8 @@ func (src *Img) Filter(kernel [][]float32) *Img {
 func (src *Img) Blur(size, blurtype int) *Img {
 	switch blurtype {
 	case BLUR_BOX:
-		return src.Filter(boxFilter(size))
+		return src.Filter(filter.GenBoxBlurMask(size))
 	}
+	//unknown filter
 	return nil
 }

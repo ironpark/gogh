@@ -62,6 +62,11 @@ func main() {
 ```
 **Convolution Filter**
 ```go
+import (
+	"fmt"
+	"github.com/ironpark/gogh"
+	"github.com/ironpark/gogh/filter"
+)
 var (
 	sobel = [][]float32{
 		{-1, 0, 1},
@@ -71,8 +76,15 @@ var (
 )
 
 func main() {
-	fmt.Println("Hello World!")
-	img := gogh.Load("4.jpg")
-	img.Filter(sobel).Histogram().Cumulative()
+	img := gogh.Load("some.jpg")
+	
+	img.Filter(sobel).Save("Sobel1.png")
+	//same code
+	img.Filter(filter.SobelMask3x3X).Save("Sobel2.png")
+	
+	//Box Blur
+	img.Filter(filter.GenBoxBlurMask(3)).Save("BoxBlur1.png")
+	//or
+	img.Blur(3, gogh.BLUR_BOX).Save("BoxBlur2.png")
 }
 ```
