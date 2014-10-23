@@ -18,6 +18,7 @@ func (src *Img) Grayscale() *Img {
 	}
 	return gray
 }
+
 func (src *Img) Binarization(T int, reverse bool) *Img {
 	dst := src.Clone()
 	bounds := src.Bounds()

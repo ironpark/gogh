@@ -1,12 +1,15 @@
 package gogh
 
 import (
+	//"fmt"
 	"github.com/ironpark/gogh/mask"
 	"math"
+	"sort"
 )
 
 const (
-	BLUR_BOX = 0
+	BLUR_BOX    = 0
+	BLUR_MEDIAN = 1
 )
 
 func (src *Img) Filter(mask interface{}, value ...int) *Img {
@@ -120,10 +123,59 @@ func (src *Img) FindEdge(maskX, maskY [][]float32, t int) *Img {
 	src = edgeImage
 	return edgeImage
 }
-func (src *Img) Blur(size, blurtype int) *Img {
+func get(src *Img, x, y int) int {
+	bounds := src.Bounds()
+	if x < 0 {
+		x = 0
+	}
+	if x > bounds.Max.X-1 {
+		x = bounds.Max.X - 1
+	}
+
+	if y < 0 {
+		y = 0
+	}
+	if y > bounds.Max.Y-1 {
+		y = bounds.Max.Y - 1
+	}
+	return src.At(x, y).Gray()
+}
+
+type intArray []int
+
+func (s intArray) Len() int           { return len(s) }
+func (s intArray) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s intArray) Less(i, j int) bool { return s[i] < s[j] }
+
+func (src *Img) MedianBlur(size int) *Img {
+	bounds := src.Bounds()
+	arr := make([]int, size*size)
+	G := src.Clone()
+	offset := -1 * (size / 2)
+	//fmt.Println(offset, offset+size)
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			i := 0
+			for x2 := offset; x2 < size+offset; x2++ {
+				for y2 := offset; y2 < size+offset; y2++ {
+					arr[i] = get(G, x+x2, y+y2)
+					i++
+				}
+			}
+
+			sort.Sort(intArray(arr))
+			median := arr[int((size*size)/2)]
+			src.At(x, y).Set(median, median, median)
+		}
+	}
+	return src
+}
+func (src *Img) Blur(blurtype, size int) *Img {
 	switch blurtype {
 	case BLUR_BOX:
 		return src.Filter(mask.GenBoxBlurMask(size))
+	case BLUR_MEDIAN:
+		return src.MedianBlur(size)
 	}
 	//unknown filter
 	return nil
