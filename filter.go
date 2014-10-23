@@ -8,17 +8,6 @@ const (
 	BLUR_BOX = 0
 )
 
-func boxFilter(size int) [][]float32 {
-	filter := make([][]float32, size)
-	for i := 0; i < size; i++ {
-		filter[i] = make([]float32, size)
-		for j := 0; j < size; j++ {
-			filter[i][j] = 1.0
-		}
-	}
-	return filter
-}
-
 func (src *Img) Filter(kernel [][]float32) *Img {
 	size := len(kernel)
 	//kernel center point
@@ -69,8 +58,12 @@ func (src *Img) Filter(kernel [][]float32) *Img {
 			if normalization {
 				cPixel = cPixel / normal
 			}
-			//set pixel
 			c := int(math.Abs(float64(cPixel)))
+			if 255 < c {
+				c = 255
+			}
+			//set pixel
+
 			v.At(x, y).Set(c, c, c)
 		}
 	}

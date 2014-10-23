@@ -50,7 +50,7 @@ func (src *Img) Canny(th_high, th_low int) *Img {
 	w := bounds.Max.X
 	h := bounds.Max.Y
 
-	G := src.Filter(gaussianMask3x3)
+	G := src.Filter(gaussianMask5x5)
 
 	//gradx := G.Clone().Filter(sobel_x)
 	//grady := G.Clone().Filter(sobel_y)
