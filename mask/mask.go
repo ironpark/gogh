@@ -1,4 +1,4 @@
-package filter
+package mask
 
 var (
 	//Gaussian
@@ -15,24 +15,24 @@ var (
 		{1, 2, 1},
 	}
 	//Sobel 3x3,5x5
-	SobelMask3x3X = [][]float64{
+	SobelMask3x3X = [][]float32{
 		{-1, 0, 1},
 		{-2, 0, 2},
 		{-1, 0, 1},
 	}
-	SobelMask3x3Y = [][]float64{
+	SobelMask3x3Y = [][]float32{
 		{-1, -2, -1},
 		{0, 0, 0},
 		{1, 2, 1},
 	}
-	SobelMask5x5X = [][]float64{
+	SobelMask5x5X = [][]float32{
 		{1, 2, 0, -2, -1},
 		{4, 8, 0, -8, -4},
 		{6, 12, 0, -12, -6},
 		{4, 8, 0, -2, -4},
 		{1, 2, 0, -2, -1},
 	}
-	SobelMask5x5Y = [][]float64{
+	SobelMask5x5Y = [][]float32{
 		{-1, -4, -6, -4, -1},
 		{-2, -8, -12, -8, -2},
 		{0, 0, 0, 0, 0, 0},
