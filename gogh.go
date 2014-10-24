@@ -7,15 +7,15 @@ import (
 )
 
 func NewImg(rect image.Rectangle) *Img {
-	return &Img{image.NewRGBA(rect)}
+	return &Img{image.NewNRGBA(rect)}
 }
 
 type Img struct {
-	src *image.RGBA
+	src *image.NRGBA
 }
 
 type Pixel struct {
-	src   *image.RGBA
+	src   *image.NRGBA
 	X     int
 	Y     int
 	color color.Color
@@ -44,7 +44,7 @@ func (src *Pixel) Gray() int {
 }
 
 func (src *Pixel) Set(r, g, b int) {
-	src.src.Set(src.X, src.Y, color.Color(color.RGBA{uint8(r), uint8(g), uint8(b), uint8(255)}))
+	src.src.Set(src.X, src.Y, color.Color(color.NRGBA{uint8(r), uint8(g), uint8(b), uint8(255)}))
 }
 
 func (src *Img) Bounds() image.Rectangle {
@@ -53,4 +53,13 @@ func (src *Img) Bounds() image.Rectangle {
 
 func (src *Img) Pixels() []uint8 {
 	return src.src.Pix
+}
+
+func (src *Img) Loop(some func(int, int)) {
+	bounds := src.Bounds()
+	for x := bounds.Min.X; x < bounds.Max.X; x++ {
+		for y := 0; y < bounds.Min.Y; y++ {
+			some(x, y)
+		}
+	}
 }

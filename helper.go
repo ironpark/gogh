@@ -30,15 +30,20 @@ func Load(path string) *Img {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &Img{ImageToRGBA(m)}
+	return &Img{ImageToNRGBA(m)}
 }
 
-func ImageToRGBA(img image.Image) *image.RGBA {
+func ImageToNRGBA(img image.Image) *image.NRGBA {
 	bounds := img.Bounds()
-	rgba := image.NewRGBA(bounds)
+	if bounds.Min.X == 0 && bounds.Min.Y == 0 {
+		if src0, ok := img.(*image.NRGBA); ok {
+			return src0
+		}
+	}
+	rgba := image.NewNRGBA(bounds)
 	model := rgba.ColorModel()
-	for i := 0; i < bounds.Max.X; i++ {
-		for j := 0; j < bounds.Max.Y; j++ {
+	for i := bounds.Min.Y; i < bounds.Max.X; i++ {
+		for j := bounds.Min.X; j < bounds.Max.Y; j++ {
 			rgba.Set(i, j, model.Convert(img.At(i, j)))
 		}
 	}
@@ -47,7 +52,7 @@ func ImageToRGBA(img image.Image) *image.RGBA {
 
 func clone(img *Img) *Img {
 	bounds := img.Bounds()
-	rgba := image.NewRGBA(bounds)
+	rgba := image.NewNRGBA(bounds)
 	for i := 0; i < bounds.Max.X; i++ {
 		for j := 0; j < bounds.Max.Y; j++ {
 			rgba.Set(i, j, img.At(i, j).color)
