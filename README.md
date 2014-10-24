@@ -48,6 +48,26 @@ func main() {
 		fmt.Println(src.At(1,2).RGBA())
 }
 ```
+**Pixel Loop**
+if you want loop all pixels
+you can use double for loop
+```go
+	src := gogh.Load("some.jpg")
+	bounds := src.Bounds()
+	for x := bounds.Min.X; x < bounds.Max.X; x++ {
+		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+			fmt.Println(c.At(x, y).Gray()
+		}
+	}
+```
+it is same fuction
+more than simple
+```go
+	src.Loop(func(x, y int) {
+		fmt.Println(src.At(x, y).Gray())
+	})
+```
+
 **Blur**
 ```go
 import (
@@ -65,7 +85,7 @@ func main() {
 import (
 	"fmt"
 	"github.com/ironpark/gogh"
-	"github.com/ironpark/gogh/filter"
+	"github.com/ironpark/gogh/mask"
 )
 var (
 	sobel = [][]float32{
@@ -80,11 +100,12 @@ func main() {
 	
 	img.Filter(sobel).Save("Sobel1.png")
 	//same code
-	img.Filter(filter.SobelMask3x3X).Save("Sobel2.png")
+	img.Filter(mask.SobelMask3x3X).Save("Sobel2.png")
 	
 	//Box Blur
-	img.Filter(filter.GenBoxBlurMask(3)).Save("BoxBlur1.png")
+	img.Filter(mask.GenBoxBlurMask(3)).Save("BoxBlur1.png")
 	//or
 	img.Blur(3, gogh.BLUR_BOX).Save("BoxBlur2.png")
+	
 }
 ```
