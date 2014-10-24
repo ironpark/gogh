@@ -58,7 +58,7 @@ func (src *Img) Pixels() []uint8 {
 func (src *Img) Loop(some func(int, int)) {
 	bounds := src.Bounds()
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
-		for y := 0; y < bounds.Min.Y; y++ {
+		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 			some(x, y)
 		}
 	}
