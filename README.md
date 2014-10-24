@@ -49,8 +49,10 @@ func main() {
 }
 ```
 **Pixel Loop**
+
 if you want loop all pixels
 you can use double for loop
+
 ```go
 	src := gogh.Load("some.jpg")
 	bounds := src.Bounds()
@@ -60,8 +62,10 @@ you can use double for loop
 		}
 	}
 ```
+
 it is same fuction
 more than simple
+
 ```go
 	src.Loop(func(x, y int) {
 		fmt.Println(src.At(x, y).Gray())
