@@ -33,29 +33,36 @@ func Load(path string) *Img {
 	}
 	var pixels []uint8
 	var imgType int = 100
+	var stride int = 1
 	switch v := m.(type) {
 	case *image.RGBA:
 		imgType = RGBA
 		pixels = v.Pix
+		stride = 4
 	case *image.RGBA64:
 		imgType = RGBA64
 		pixels = v.Pix
+		stride = 8
 	case *image.NRGBA:
 		imgType = NRGBA
 		pixels = v.Pix
+		stride = 4
 	case *image.NRGBA64:
 		imgType = NRGBA64
 		pixels = v.Pix
+		stride = 8
 	case *image.Gray:
 		imgType = GRAY
 		pixels = v.Pix
+		stride = 1
 	case *image.Gray16:
 		imgType = GRAY16
 		pixels = v.Pix
+		stride = 2
 
 	}
 	fmt.Println("FUCK", imgType, m.Bounds().Max.X, m.Bounds().Max.Y)
-	return &Img{pixels, imgType, m.Bounds().Max.X, m.Bounds().Max.Y, m.Bounds()}
+	return &Img{pixels, imgType, m.Bounds().Max.X, m.Bounds().Max.Y, m.Bounds(), stride}
 }
 
 func ImageToNRGBA(img image.Image) *image.NRGBA {
@@ -78,5 +85,5 @@ func ImageToNRGBA(img image.Image) *image.NRGBA {
 
 func clone(img *Img) *Img {
 	pix := img.Pixels[:]
-	return &Img{pix, img.ImageType, img.Width, img.Height, img.Bounds}
+	return &Img{pix, img.ImageType, img.Width, img.Height, img.Bounds, img.stride}
 }
