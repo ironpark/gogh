@@ -3,6 +3,7 @@ package gogh
 import (
 	"image"
 	//_ "image/bmp"
+	"fmt"
 	_ "image/jpeg"
 	"image/png"
 	"log"
@@ -30,7 +31,31 @@ func Load(path string) *Img {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &Img{ImageToNRGBA(m)}
+	var pixels []uint8
+	var imgType int = 100
+	switch v := m.(type) {
+	case *image.RGBA:
+		imgType = RGBA
+		pixels = v.Pix
+	case *image.RGBA64:
+		imgType = RGBA64
+		pixels = v.Pix
+	case *image.NRGBA:
+		imgType = NRGBA
+		pixels = v.Pix
+	case *image.NRGBA64:
+		imgType = NRGBA64
+		pixels = v.Pix
+	case *image.Gray:
+		imgType = GRAY
+		pixels = v.Pix
+	case *image.Gray16:
+		imgType = GRAY16
+		pixels = v.Pix
+
+	}
+	fmt.Println("FUCK", imgType, m.Bounds().Max.X, m.Bounds().Max.Y)
+	return &Img{pixels, imgType, m.Bounds().Max.X, m.Bounds().Max.Y, m.Bounds()}
 }
 
 func ImageToNRGBA(img image.Image) *image.NRGBA {
@@ -40,6 +65,7 @@ func ImageToNRGBA(img image.Image) *image.NRGBA {
 			return src0
 		}
 	}
+
 	rgba := image.NewNRGBA(bounds)
 	model := rgba.ColorModel()
 	for i := bounds.Min.Y; i < bounds.Max.X; i++ {
@@ -51,12 +77,6 @@ func ImageToNRGBA(img image.Image) *image.NRGBA {
 }
 
 func clone(img *Img) *Img {
-	bounds := img.Bounds()
-	rgba := image.NewNRGBA(bounds)
-	for i := 0; i < bounds.Max.X; i++ {
-		for j := 0; j < bounds.Max.Y; j++ {
-			rgba.Set(i, j, img.At(i, j).color)
-		}
-	}
-	return &Img{rgba}
+	pix := img.Pixels[:]
+	return &Img{pix, img.ImageType, img.Width, img.Height, img.Bounds}
 }

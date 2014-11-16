@@ -3,35 +3,96 @@ package gogh
 
 import (
 	"image"
-	"image/color"
 )
 
-func NewImg(rect image.Rectangle) *Img {
-	return &Img{image.NewNRGBA(rect)}
+const (
+	GRAY    = 0
+	GRAY16  = 1
+	NRGBA   = 3
+	NRGBA64 = 4
+	RGBA    = 5
+	RGBA64  = 6
+)
+
+func NewImg(rect image.Rectangle, T int) *Img {
+	var im []uint8
+	switch T {
+	case GRAY:
+		im = image.NewGray(rect).Pix
+	case GRAY16:
+		im = image.NewGray16(rect).Pix
+	case NRGBA:
+		im = image.NewNRGBA(rect).Pix
+	case NRGBA64:
+		im = image.NewNRGBA64(rect).Pix
+	case RGBA64:
+		im = image.NewRGBA(rect).Pix
+	case RGBA:
+		im = image.NewRGBA64(rect).Pix
+	default:
+		return nil
+	}
+
+	return &Img{im, T, rect.Max.X, rect.Max.Y, rect}
 }
 
 type Img struct {
-	src *image.NRGBA
+	Pixels    []uint8
+	ImageType int
+	Width     int
+	Height    int
+	Bounds    image.Rectangle
 }
 
 type Pixel struct {
-	src   *image.NRGBA
-	X     int
-	Y     int
-	color color.Color
+	src *uint8
+	X   int
+	Y   int
 }
 
-func (src *Img) At(x, y int) *Pixel {
-	return &Pixel{src.src, x, y, src.src.At(x, y)}
+func (img *Img) At(x, y int) *Pixel {
+	return &Pixel{&img.Pixels[img.Width*y+x], x, y}
 }
 
+//TEMP!!! YOU MUST FIX!!
 func (src *Pixel) RGBA() (int, int, int, int) {
-	r, g, b, a := src.color.RGBA()
-	return int(r >> 8), int(g >> 8), int(b >> 8), int(a >> 8)
+	r := src.src
+	g := src.src
+	b := src.src
+	a := src.src
+	return int(*r), int(*g), int(*b), int(*a)
 }
 
 func (src *Img) Save(path string) {
-	save(path, src.src)
+	var im image.Image
+	switch src.ImageType {
+	case GRAY:
+		t := image.NewGray(src.Bounds)
+		t.Pix = src.Pixels
+		im = t
+	case GRAY16:
+		t := image.NewGray16(src.Bounds)
+		t.Pix = src.Pixels
+		im = t
+	case NRGBA:
+		t := image.NewNRGBA(src.Bounds)
+		t.Pix = src.Pixels
+		im = t
+	case NRGBA64:
+		t := image.NewNRGBA64(src.Bounds)
+		t.Pix = src.Pixels
+		im = t
+	case RGBA64:
+		t := image.NewRGBA(src.Bounds)
+		t.Pix = src.Pixels
+		im = t
+	case RGBA:
+		t := image.NewRGBA64(src.Bounds)
+		t.Pix = src.Pixels
+		im = t
+	}
+
+	save(path, im)
 }
 
 func (src *Img) Clone() *Img {
@@ -39,27 +100,21 @@ func (src *Img) Clone() *Img {
 }
 
 func (src *Pixel) Gray() int {
-	gray, _, _, _ := src.color.RGBA()
-	return int(gray >> 8)
+	return int(*src.src)
 }
 
+//MUST FIX!!!!!!!!!!!
 func (src *Pixel) Set(r, g, b int) {
-	src.src.Set(src.X, src.Y, color.Color(color.NRGBA{uint8(r), uint8(g), uint8(b), uint8(255)}))
+	*src.src = uint8(r)
+	*src.src = uint8(g)
+	*src.src = uint8(b)
 }
 
-func (src *Img) Bounds() image.Rectangle {
-	return src.src.Bounds()
-}
-
-func (src *Img) Pixels() []uint8 {
-	return src.src.Pix
-}
-
-func (src *Img) Loop(some func(int, int)) {
-	bounds := src.Bounds()
+func (src *Img) Loop(some func(int, int, *Pixel)) {
+	bounds := src.Bounds
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
 		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-			some(x, y)
+			some(x, y, src.At(x, y))
 		}
 	}
 }

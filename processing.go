@@ -8,7 +8,7 @@ import (
 
 func (src *Img) Grayscale() *Img {
 	gray := src.Clone()
-	bounds := src.Bounds()
+	bounds := src.Bounds
 	for x := 0; x < bounds.Max.X; x++ {
 		for y := 0; y < bounds.Max.Y; y++ {
 			r, g, b, _ := gray.At(x, y).RGBA()
@@ -21,7 +21,7 @@ func (src *Img) Grayscale() *Img {
 
 func (src *Img) Binarization(T int, reverse bool) *Img {
 	dst := src.Clone()
-	bounds := src.Bounds()
+	bounds := src.Bounds
 	for x := 0; x < bounds.Max.X; x++ {
 		for y := 0; y < bounds.Max.Y; y++ {
 			pixel := dst.At(x, y)

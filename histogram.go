@@ -14,25 +14,22 @@ type histogram struct {
 }
 
 func (src *Img) Histogram() *histogram {
-	bounds := src.Bounds()
 	histo := make([]int, 256)
 
 	high := 0
 	low := 255
-	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			pixel := src.At(x, y) //.Gray()
-			gray := pixel.Gray()
-			histo[gray]++
 
-			if high < gray {
-				high = gray
-			}
-			if low > gray {
-				low = gray
-			}
+	src.Loop(func(x, y int, pixel *Pixel) {
+		gray := pixel.Gray()
+		histo[gray]++
+
+		if high < gray {
+			high = gray
 		}
-	}
+		if low > gray {
+			low = gray
+		}
+	})
 	return &histogram{histo, nil, src, high, low}
 }
 
@@ -78,21 +75,17 @@ func (src *histogram) Graph() []int {
 func (histo *histogram) Stretching() *Img {
 	//high - low
 	hml := (histo.high - histo.low)
-	bounds := histo.src.Bounds()
 	fmt.Println(histo.low, histo.high)
 	/*
 		new pixel = (oldpixel - low/high - low)*255
 	*/
-	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			pixel := histo.src.At(x, y)
-			gray := pixel.Gray()
-			gray = int(float32(gray-histo.low) / float32(hml) * 255)
-			//gray = (gray - histo.low) / hml * 255
+	histo.src.Loop(func(x, y int, pixel *Pixel) {
+		gray := pixel.Gray()
+		gray = int(float32(gray-histo.low) / float32(hml) * 255)
+		//gray = (gray - histo.low) / hml * 255
 
-			pixel.Set(gray, gray, gray)
-		}
-	}
+		pixel.Set(gray, gray, gray)
+	})
 	//히스토그램 변경사항을 구조체에 반영하는 코드 필요 .
 	return histo.src
 }
