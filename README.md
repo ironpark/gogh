@@ -2,12 +2,9 @@ gogh
 ====
 
 image processing package write in go
+for Computer Vision (like OpenCV)
 
-##How To Install?
-```
-go get github.com/ironpark/gogh
-```
-##How To Update?
+##How To Install/Update?
 ```
 go get -u github.com/ironpark/gogh
 ```
