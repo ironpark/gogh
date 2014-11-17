@@ -72,30 +72,28 @@ func (src *Img) Canny(th_high, th_low int) *Img {
 		gnl[i] = make([]int, h)
 	}
 	/* Determine edge directions and gradient strengths */
-	for y := 0; y < h; y++ {
-		for x := 0; x < w; x++ {
-			a1, a2, a3 := gray(G, x-1, y-1), gray(G, x, y-1), gray(G, x+1, y-1)
-			b1, b3 := gray(G, x-1, y), gray(G, x+1, y-1)
-			c1, c2, c3 := gray(G, x-1, y+1), gray(G, x, y+1), gray(G, x+1, y+1)
-			// -1 0 1
-			// -2 0 2
-			// -1 0 1
-			Gx := a1*-1 + a3 + b1*-2 + b3*2 + c1*-1 + c3
+	src.Loop(func(x, y int, p *Pixel) {
+		a1, a2, a3 := gray(G, x-1, y-1), gray(G, x, y-1), gray(G, x+1, y-1)
+		b1, b3 := gray(G, x-1, y), gray(G, x+1, y-1)
+		c1, c2, c3 := gray(G, x-1, y+1), gray(G, x, y+1), gray(G, x+1, y+1)
+		// -1 0 1
+		// -2 0 2
+		// -1 0 1
+		Gx := a1*-1 + a3 + b1*-2 + b3*2 + c1*-1 + c3
 
-			// -1 -2 -1
-			//  0  0  0
-			//  1  2  1
-			Gy := a1*-1 + a2*-2 + a3*-1 + c1 + c2*2 + c3
-			dxMat[x][y] = int(Gx)
-			dyMat[x][y] = int(Gy)
-			m := math.Abs(Gx) + math.Abs(Gy)
-			//if m < 255 {
-			mag[x][y] = int(m)
-			//} else {
-			//	mag[x][y] = 255
-			//}
-		}
-	}
+		// -1 -2 -1
+		//  0  0  0
+		//  1  2  1
+		Gy := a1*-1 + a2*-2 + a3*-1 + c1 + c2*2 + c3
+		dxMat[x][y] = int(Gx)
+		dyMat[x][y] = int(Gy)
+		m := math.Abs(Gx) + math.Abs(Gy)
+		//if m < 255 {
+		mag[x][y] = int(m)
+		//} else {
+		//	mag[x][y] = 255
+		//}
+	})
 	const fbit = 10
 	const tan225 = 424
 	const tan675 = 2472

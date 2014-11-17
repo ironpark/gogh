@@ -3,7 +3,7 @@ package gogh
 import (
 	"image"
 	//_ "image/bmp"
-	"fmt"
+	//"fmt"
 	_ "image/jpeg"
 	"image/png"
 	"log"
@@ -61,26 +61,7 @@ func Load(path string) *Img {
 		stride = 2
 
 	}
-	fmt.Println("FUCK", imgType, m.Bounds().Max.X, m.Bounds().Max.Y)
 	return &Img{pixels, imgType, m.Bounds().Max.X, m.Bounds().Max.Y, m.Bounds(), stride}
-}
-
-func ImageToNRGBA(img image.Image) *image.NRGBA {
-	bounds := img.Bounds()
-	if bounds.Min.X == 0 && bounds.Min.Y == 0 {
-		if src0, ok := img.(*image.NRGBA); ok {
-			return src0
-		}
-	}
-
-	rgba := image.NewNRGBA(bounds)
-	model := rgba.ColorModel()
-	for i := bounds.Min.Y; i < bounds.Max.X; i++ {
-		for j := bounds.Min.X; j < bounds.Max.Y; j++ {
-			rgba.Set(i, j, model.Convert(img.At(i, j)))
-		}
-	}
-	return rgba
 }
 
 func clone(img *Img) *Img {

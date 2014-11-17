@@ -1,8 +1,8 @@
 package gogh
 
 import (
-	//"image"
-	"fmt"
+//"image"
+//"fmt"
 )
 
 type histogram struct {
@@ -71,20 +71,33 @@ func (src *histogram) Graph() []int {
 	}
 }
 
-//Contrast Stretching
+const (
+	Kb = 0.0722
+	Kr = 0.2126
+)
+
+//NOW OnlyGray :(
 func (histo *histogram) Stretching() *Img {
 	//high - low
 	hml := (histo.high - histo.low)
-	fmt.Println(histo.low, histo.high)
+	//fmt.Println(histo.low, histo.high)
 	/*
 		new pixel = (oldpixel - low/high - low)*255
 	*/
 	histo.src.Loop(func(x, y int, pixel *Pixel) {
+
+		//switch histo.src.ImageType {
+		//case NRGBA, RGBA:
+		//	//R, G, B, _ := pixel.RGBA()
+		//	//Y := Kr*R + (1-Kr-Kb)*G + Kb*B
+		//	//Pb := 0.5 * (B - Y) / (1 - Kb)
+		//	//Pr := 0.5 * (R - Y) / (1 - Kr)
+		//case GRAY:
 		gray := pixel.Gray()
 		gray = int(float32(gray-histo.low) / float32(hml) * 255)
-		//gray = (gray - histo.low) / hml * 255
-
 		pixel.Set(gray, gray, gray)
+		//fmt.Println(x, y, gray)
+		//}
 	})
 	//히스토그램 변경사항을 구조체에 반영하는 코드 필요 .
 	return histo.src

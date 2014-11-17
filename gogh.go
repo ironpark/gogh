@@ -2,7 +2,7 @@
 package gogh
 
 import (
-	"fmt"
+	//"fmt"
 	"image"
 	"log"
 )
@@ -78,7 +78,7 @@ func (img *Img) At(x, y int) *Pixel {
 
 	case NRGBA, RGBA:
 		index := img.Width*y*4 + x*4
-		fmt.Println(img.Pixels[index+x], img.Pixels[index+x+1], img.Pixels[index+x+2], img.Pixels[index+x+3])
+		//fmt.Println(img.Pixels[index+x], img.Pixels[index+x+1], img.Pixels[index+x+2], img.Pixels[index+x+3])
 		return &Pixel{[]*uint8{
 			&img.Pixels[index+0],
 			&img.Pixels[index+1],
@@ -179,13 +179,15 @@ func (src *Pixel) Set(color ...interface{}) {
 				*src.src[0] = uint8(v)
 			}
 		} else {
-			for i := range src.src {
-				if u, e := color[i].(int); e {
-					*src.src[i] = uint8(u)
-				} else if u, e := color[i].(uint8); e {
-					*src.src[i] = u
-				} else {
-					log.Fatal("argument is not uint8 or int")
+			for i, item := range src.src {
+				if len(color) > i {
+					if u, e := color[i].(int); e {
+						*item = uint8(u)
+					} else if u, e := color[i].(uint8); e {
+						*item = u
+					} else {
+						log.Fatal("argument is not uint8 or int")
+					}
 				}
 			}
 		}
